@@ -13,15 +13,15 @@ import {
 import { flattenLogicalOperators } from "./flattenLogicalOperators";
 import { limitToDepth } from "./limitToDepth";
 import { normalizeFilterValue } from "./normalizeFilterValue";
-import { NormalizeInputFilterOptions } from "./NormalizeInputFilterOptions";
+import {
+  NormalizeInputFilterOptions,
+  normalizeOptions,
+} from "./NormalizeInputFilterOptions";
 
 type KeyValuePair = {
   key: string;
   value: unknown;
 };
-
-const DEFAULT_MAX_DEPTH = 3;
-const DEFAULT_FIELD_VALUE_MAX_DEPTH = 3;
 
 /**
  * Normaliza um objeto de filtro para um formato intermediário válido e bem conhecido,
@@ -36,13 +36,7 @@ export function normalizeInputFilter(
   input: unknown,
   options?: NormalizeInputFilterOptions
 ): FilterTree {
-  options = {
-    acceptedFields: [],
-    ignoredFields: [],
-    maxDepth: DEFAULT_MAX_DEPTH,
-    fieldValueMaxDepth: DEFAULT_FIELD_VALUE_MAX_DEPTH,
-    ...options,
-  };
+  options = normalizeOptions(options);
   const filter = normalizeInputFilterInternal(input, options);
   const flattened = flattenLogicalOperators(filter);
   return limitToDepth(flattened, options.maxDepth!);

@@ -26,3 +26,18 @@ export interface NormalizeInputFilterOptions {
    */
   fieldValueMaxDepth?: number;
 }
+
+const DEFAULT_MAX_DEPTH = 3;
+const DEFAULT_FIELD_VALUE_MAX_DEPTH = 3;
+
+export function normalizeOptions(
+  options?: NormalizeInputFilterOptions
+): NormalizeInputFilterOptions {
+  return {
+    acceptedFields: [],
+    ignoredFields: [],
+    maxDepth: DEFAULT_MAX_DEPTH,
+    fieldValueMaxDepth: DEFAULT_FIELD_VALUE_MAX_DEPTH,
+    ...options,
+  };
+}
