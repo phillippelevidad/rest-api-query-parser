@@ -2,7 +2,12 @@ import { normalizeInputFilter } from "./normalizers/normalizeInputFilter";
 import { translateFilterToMongoDb } from "./translators/mongoDb/translateFilterToMongoDb";
 
 const inputFilter = {
-  age: { gte: 18, lte: 100 },
+  name: "Phill",
+  roles: { in: [null, "admin", "other"] },
+  or: {
+    age: { gte: 18, lte: 100 },
+    isEnabled: true,
+  },
 };
 
 const filter = normalizeInputFilter(inputFilter);
