@@ -1,3 +1,5 @@
+import { Concrete } from "../helpers/Concrete";
+
 /**
  * Opções de normalização de filtros.
  */
@@ -32,7 +34,7 @@ const DEFAULT_FIELD_VALUE_MAX_DEPTH = 3;
 
 export function normalizeOptions(
   options?: NormalizeInputFilterOptions
-): NormalizeInputFilterOptions {
+): Concrete<NormalizeInputFilterOptions> {
   return {
     acceptedFields: [],
     ignoredFields: [],

@@ -17,6 +17,7 @@ import {
   NormalizeInputFilterOptions,
   normalizeOptions,
 } from "./NormalizeInputFilterOptions";
+import { Concrete } from "../helpers/Concrete";
 
 type KeyValuePair = {
   key: string;
@@ -36,21 +37,21 @@ export function normalizeInputFilter(
   input: unknown,
   options?: NormalizeInputFilterOptions
 ): FilterTree {
-  options = normalizeOptions(options);
-  const filter = normalizeInputFilterInternal(input, options);
+  const opt = normalizeOptions(options);
+  const filter = normalizeInputFilterInternal(input, opt);
   const flattened = flattenLogicalOperators(filter);
-  return limitToDepth(flattened, options.maxDepth!);
+  return limitToDepth(flattened, opt.maxDepth!);
 }
 
 function normalizeInputFilterInternal(
   input: unknown,
-  options: NormalizeInputFilterOptions
+  options: Concrete<NormalizeInputFilterOptions>
 ): FilterTree {
   if (!input || !isObject(input)) return [];
 
   const inputObject = input as Record<string, unknown>;
   const nodes = Object.entries(inputObject)
-    .map(([key, value]) => normalizeNode({ key, value }, options!))
+    .map(([key, value]) => normalizeNode({ key, value }, options))
     .filter((node) => node !== null) as LogicalOrFilterNode[];
 
   if (!nodes.length) return [];
@@ -65,7 +66,7 @@ function normalizeInputFilterInternal(
 
 function normalizeNode(
   input: KeyValuePair,
-  options: NormalizeInputFilterOptions
+  options: Concrete<NormalizeInputFilterOptions>
 ): LogicalOrFilterNode | null {
   const logicalNode = normalizeLogicalNode(input, options);
   if (logicalNode) return logicalNode;
@@ -84,7 +85,7 @@ function normalizeNode(
 
 function normalizeLogicalNode(
   input: KeyValuePair,
-  options: NormalizeInputFilterOptions
+  options: Concrete<NormalizeInputFilterOptions>
 ): LogicalNode | FilterNode | null {
   const operator = resolveOperator(input.key);
   if (!isLogicalOperator(operator)) return null;
@@ -107,7 +108,7 @@ function normalizeLogicalNode(
 
 function normalizeFilterNode(
   input: KeyValuePair,
-  options: NormalizeInputFilterOptions
+  options: Concrete<NormalizeInputFilterOptions>
 ): FilterNode[] {
   const field = input.key;
   if (shouldDiscardField(field, options)) return [];
@@ -126,7 +127,7 @@ function normalizeFilterNode(
 
       const filterValue = normalizeFilterValue(
         value,
-        options.fieldValueMaxDepth!
+        options.fieldValueMaxDepth
       );
       if (filterValue === undefined) return null;
 
@@ -150,10 +151,10 @@ function resolveOperator(operator: string): string | null {
 
 function shouldDiscardField(
   field: string,
-  options: NormalizeInputFilterOptions
+  options: Concrete<NormalizeInputFilterOptions>
 ): boolean {
   const { acceptedFields, ignoredFields } = options;
-  if (acceptedFields?.length && !acceptedFields.includes(field)) return true;
-  if (ignoredFields?.length && ignoredFields.includes(field)) return true;
+  if (acceptedFields.length && !acceptedFields.includes(field)) return true;
+  if (ignoredFields.length && ignoredFields.includes(field)) return true;
   return false;
 }
