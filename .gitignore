@@ -36,7 +36,3 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
-
-# ignore yarn.lock
-# Remove this if you want to commit your yarn.lock file.
-yarn.lock
