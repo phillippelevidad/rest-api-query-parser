@@ -56,6 +56,13 @@ a normalized format, and finally converts it to a MongoDB filter.
 }
 ```
 
+### Options
+
+* **acceptedFields**: If supplied, automatically removes filters by fields which are not listed.
+* **ignoredFields**: If supplied, automatically removes filters by listed fields.
+* **maxDepth**: Logical operators increase depth. Use this to limit the depth. Defaults to 3.
+* **fieldValueMaxDepth**: Fields can supply objects as filter values. Use this to limit the depth of the object. Defaults to 3.
+
 ### Supported operators
 
 * **Logical**: and, or
