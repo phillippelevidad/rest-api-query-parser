@@ -4,7 +4,6 @@ import { FilterTree } from "../../models/FilterTree";
 import { LogicalNode } from "../../models/LogicalNode";
 import { LogicalOrFilterNode } from "../../models/LogicalOrFilterNode";
 import { LOGICAL_OPERATORS } from "../../models/operators";
-import { flattenLogicalOperators } from "./flattenLogicalOperators";
 import { mergeDuplicatedFields } from "./mergeDuplicatedFields";
 import { translateOperator } from "./translateOperator";
 
@@ -13,7 +12,7 @@ import { translateOperator } from "./translateOperator";
  * @param filter A árvore de filtros a ser convertida.
  * @returns Um objeto que pode ser usado como filtro no MongoDB.
  */
-export function translateFieldToMongoDb(filter: FilterTree): Filter<Document> {
+export function translateFilterToMongoDb(filter: FilterTree): Filter<Document> {
   if (filter.length === 0) return {};
   const translated = translateNode(filter[0]) ?? {};
   const merged = mergeDuplicatedFields(translated);
