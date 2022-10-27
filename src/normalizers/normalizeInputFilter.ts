@@ -89,6 +89,22 @@ function normalizeLogicalNode(
 ): LogicalNode | FilterNode | null {
   const operator = resolveOperator(input.key);
   if (!isLogicalOperator(operator)) return null;
+
+  if (Array.isArray(input.value)) {
+    const conditions = input.value
+      .map((entry) => {
+        entry = Object.entries(entry)[0];
+        const input = { key: entry[0], value: entry[1] };
+        return normalizeNode(input, options);
+      })
+      .filter((condition) => condition !== null) as LogicalOrFilterNode[];
+
+    return {
+      operator: operator!,
+      conditions,
+    };
+  }
+
   if (!isObject(input.value)) return null;
 
   const conditions = Object.entries(input.value as Record<string, unknown>)
