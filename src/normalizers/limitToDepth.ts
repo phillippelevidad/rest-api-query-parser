@@ -11,12 +11,11 @@ import { LogicalNode } from "../models/LogicalNode";
  * @returns O filtro limitado à profundade informada.
  */
 export function limitToDepth(filter: FilterTree, maxDepth: number, depth = 1) {
-  if (depth > maxDepth) return [];
-
   const result: FilterTree = [];
 
   for (const node of filter) {
     if (isLogicalOperator(node.operator)) {
+      if (depth > maxDepth) continue;
       const logicalNode = node as LogicalNode;
 
       const limited = limitToDepth(logicalNode.conditions, maxDepth, depth + 1);
