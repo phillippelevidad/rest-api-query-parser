@@ -33,9 +33,9 @@ export function translateOperator(operator: string): string | null {
       return "$nin";
 
     case FILTER_CONTAINS:
-      return "$elemMatch";
+      return "$elemMatch"; // maybe use $all instead?
     case FILTER_CONTAINS_ANY:
-      return "❌❌❌";
+      return "$in";
     case FILTER_NOT_CONTAINS:
       return "❌❌❌";
     case FILTER_STARTS_WITH:
