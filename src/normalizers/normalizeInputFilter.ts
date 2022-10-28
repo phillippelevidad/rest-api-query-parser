@@ -91,7 +91,7 @@ function normalizeLogicalNode(
   const operator = resolveOperator(input.key);
   if (!isLogicalOperator(operator)) return null;
 
-  const entries =
+  const inputConditions =
     // Processa o formato `{ and: { name: "John", age: { gt: 18 } } }`
     isObject(input.value)
       ? Object.entries(input.value as Record<string, unknown>)
@@ -101,9 +101,9 @@ function normalizeLogicalNode(
           Object.entries(value as Record<string, unknown>)
         )
       : null;
-  if (!entries) return null;
+  if (!inputConditions) return null;
 
-  const conditions = entries
+  const conditions = inputConditions
     .map((entry) => {
       const input = { key: entry[0], value: entry[1] };
       return normalizeNode(input, options);
