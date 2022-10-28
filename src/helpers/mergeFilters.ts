@@ -1,6 +1,7 @@
 import { FilterTree } from "../models/FilterTree";
 import { LogicalOrFilterNode } from "../models/LogicalOrFilterNode";
 import { LOGICAL_AND } from "../models/operators";
+import { flattenLogicalOperators } from "./flattenLogicalOperators";
 
 /**
  * Mescla dois filtros em um único filtro.
@@ -15,12 +16,12 @@ export function mergeFilters(
   if (!filter2.length) return filter1;
   if (!filter1.length) return filter2;
 
-  return [
+  return flattenLogicalOperators([
     {
       operator: LOGICAL_AND,
       conditions: [toSingleNode(filter1), toSingleNode(filter2)],
     },
-  ];
+  ]);
 }
 
 function toSingleNode(filter: FilterTree): LogicalOrFilterNode {

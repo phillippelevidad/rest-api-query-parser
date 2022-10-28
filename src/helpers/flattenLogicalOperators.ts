@@ -1,4 +1,4 @@
-import { isLogicalOperator } from "../helpers/isLogicalOperator";
+import { isLogicalOperator } from "./isLogicalOperator";
 import { FilterTree } from "../models/FilterTree";
 import { LogicalNode } from "../models/LogicalNode";
 

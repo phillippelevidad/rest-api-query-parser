@@ -1,7 +1,10 @@
+import { Concrete } from "../helpers/Concrete";
 import { isLogicalOperator } from "../helpers/isLogicalOperator";
 import { isObject } from "../helpers/isObject";
-import { FilterTree } from "../models/FilterTree";
+import { shouldDiscardField } from "../models/FilterOptions";
+import { flattenLogicalOperators } from "../helpers/flattenLogicalOperators";
 import { FilterNode } from "../models/FilterNode";
+import { FilterTree } from "../models/FilterTree";
 import { LogicalNode } from "../models/LogicalNode";
 import { LogicalOrFilterNode } from "../models/LogicalOrFilterNode";
 import {
@@ -10,15 +13,12 @@ import {
   OPERATORS,
   OPERATOR_SYNONYMS,
 } from "../models/operators";
-import { flattenLogicalOperators } from "./flattenLogicalOperators";
 import { limitToDepth } from "./limitToDepth";
-import { normalizeFilterValue } from "./normalizeFilterValue";
 import {
   NormalizeInputFilterOptions,
   getOptionsOrDefault,
 } from "./NormalizeInputFilterOptions";
-import { Concrete } from "../helpers/Concrete";
-import { shouldDiscardField } from "../models/FilterOptions";
+import { normalizeFilterValue } from "./normalizeFilterValue";
 
 type KeyValuePair = {
   key: string;
