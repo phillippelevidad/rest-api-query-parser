@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, expect, it } from "@jest/globals";
 import { limitToDepth } from "./limitToDepth";
 
 describe("limitToDepth", () => {
@@ -6,6 +6,6 @@ describe("limitToDepth", () => {
     const filter = [{ field: "a", operator: "equals", value: 1 }];
     const limited = limitToDepth(filter, 0);
 
-    expect(limited).to.deep.equal(filter);
+    expect(limited).toEqual(filter);
   });
 });

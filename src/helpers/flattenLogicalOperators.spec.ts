@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, expect, it } from "@jest/globals";
 import { flattenLogicalOperators } from "./flattenLogicalOperators";
 
 describe("flattenLogicalOperators", () => {
@@ -15,7 +15,7 @@ describe("flattenLogicalOperators", () => {
       },
     ]);
 
-    expect(flattened).to.deep.equal([
+    expect(flattened).toEqual([
       {
         operator: "and",
         conditions: [{ field: "a", operator: "equals", value: 1 }],
@@ -39,7 +39,7 @@ describe("flattenLogicalOperators", () => {
       },
     ]);
 
-    expect(flattened).to.deep.equal([
+    expect(flattened).toEqual([
       {
         operator: "and",
         conditions: [

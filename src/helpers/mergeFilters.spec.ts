@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, expect, it } from "@jest/globals";
 import { LOGICAL_AND } from "../models/operators";
 import { mergeFilters } from "./mergeFilters";
 
@@ -9,7 +9,7 @@ describe("mergeFilters", () => {
 
     const meged = mergeFilters(filter1, filter2);
 
-    expect(meged).to.deep.equal([
+    expect(meged).toEqual([
       {
         operator: LOGICAL_AND,
         conditions: [
@@ -34,7 +34,7 @@ describe("mergeFilters", () => {
 
     const meged = mergeFilters(filter1, filter2);
 
-    expect(meged).to.deep.equal([
+    expect(meged).toEqual([
       {
         operator: LOGICAL_AND,
         conditions: [
@@ -60,7 +60,7 @@ describe("mergeFilters", () => {
 
     const meged = mergeFilters(filter1, filter2);
 
-    expect(meged).to.deep.equal([
+    expect(meged).toEqual([
       {
         operator: LOGICAL_AND,
         conditions: [
