@@ -1,21 +1,13 @@
 import { Concrete } from "../helpers/Concrete";
+import {
+  FilterOptions,
+  getOptionsOrDefault as getBaseOptionsOrDefault,
+} from "../models/FilterOptions";
 
 /**
  * Opções de normalização de filtros.
  */
-export interface NormalizeInputFilterOptions {
-  /**
-   * Lista de campos que serão aceitos, isto é,
-   * mantidos no filtro. Tem prioridade sobre os campos
-   * ignorados.
-   */
-  acceptedFields?: string[];
-  /**
-   * Lista de campos que serão ignorados, isto é,
-   * removidos do filtro. Só funciona se não especificar
-   * campos aceitos.
-   */
-  ignoredFields?: string[];
+export interface NormalizeInputFilterOptions extends FilterOptions {
   /**
    * Profundidade máxima do filtro.
    * O que aumenta a profundidade de um filtro são os operadores lógicos: AND e OR.
@@ -32,14 +24,12 @@ export interface NormalizeInputFilterOptions {
 const DEFAULT_MAX_DEPTH = 3;
 const DEFAULT_FIELD_VALUE_MAX_DEPTH = 3;
 
-export function normalizeOptions(
+export function getOptionsOrDefault(
   options?: NormalizeInputFilterOptions
 ): Concrete<NormalizeInputFilterOptions> {
   return {
-    acceptedFields: [],
-    ignoredFields: [],
     maxDepth: DEFAULT_MAX_DEPTH,
     fieldValueMaxDepth: DEFAULT_FIELD_VALUE_MAX_DEPTH,
-    ...options,
+    ...getBaseOptionsOrDefault(options),
   };
 }

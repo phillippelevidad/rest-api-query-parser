@@ -15,9 +15,10 @@ import { limitToDepth } from "./limitToDepth";
 import { normalizeFilterValue } from "./normalizeFilterValue";
 import {
   NormalizeInputFilterOptions,
-  normalizeOptions,
+  getOptionsOrDefault,
 } from "./NormalizeInputFilterOptions";
 import { Concrete } from "../helpers/Concrete";
+import { shouldDiscardField } from "../models/FilterOptions";
 
 type KeyValuePair = {
   key: string;
@@ -37,7 +38,7 @@ export function normalizeInputFilter(
   input: unknown,
   options?: NormalizeInputFilterOptions
 ): FilterTree {
-  const opt = normalizeOptions(options);
+  const opt = getOptionsOrDefault(options);
   const filter = normalizeInputFilterInternal(input, opt);
   const flattened = flattenLogicalOperators(filter);
   return limitToDepth(flattened, opt.maxDepth!);
@@ -147,14 +148,4 @@ function resolveOperator(operator: string): string | null {
     synonyms.some((synonym) => synonym.toLowerCase() === operator.toLowerCase())
   );
   return match ? match[0] : null;
-}
-
-function shouldDiscardField(
-  field: string,
-  options: Concrete<NormalizeInputFilterOptions>
-): boolean {
-  const { acceptedFields, ignoredFields } = options;
-  if (acceptedFields.length && !acceptedFields.includes(field)) return true;
-  if (ignoredFields.length && ignoredFields.includes(field)) return true;
-  return false;
 }

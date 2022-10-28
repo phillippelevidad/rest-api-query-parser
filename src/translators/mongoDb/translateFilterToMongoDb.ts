@@ -1,29 +1,17 @@
 import { Document, Filter } from "mongodb";
 import { Concrete } from "../../helpers/Concrete";
 import { FilterNode } from "../../models/FilterNode";
+import {
+  FilterOptions,
+  getOptionsOrDefault,
+  shouldDiscardField,
+} from "../../models/FilterOptions";
 import { FilterTree } from "../../models/FilterTree";
 import { LogicalNode } from "../../models/LogicalNode";
 import { LogicalOrFilterNode } from "../../models/LogicalOrFilterNode";
 import { LOGICAL_OPERATORS } from "../../models/operators";
 import { mergeDuplicatedFields } from "./mergeDuplicatedFields";
 import { translateOperator } from "./translateOperator";
-
-export interface TranslateFilterOptions {
-  acceptedFields?: string[];
-  ignoredFields?: string[];
-  remapFieldNames?: Record<string, string>;
-}
-
-export function normalizeFilterOptions(
-  options?: TranslateFilterOptions
-): Concrete<TranslateFilterOptions> {
-  return {
-    acceptedFields: [],
-    ignoredFields: [],
-    remapFieldNames: {},
-    ...options,
-  };
-}
 
 /**
  * Converte um FilterTree em um objeto que pode ser usado como filtro no MongoDB.
@@ -32,10 +20,10 @@ export function normalizeFilterOptions(
  */
 export function translateFilterToMongoDb(
   filter: FilterTree,
-  options?: TranslateFilterOptions
+  options?: FilterOptions
 ): Filter<Document> {
   if (filter.length === 0) return {};
-  const opt = normalizeFilterOptions(options);
+  const opt = getOptionsOrDefault(options);
   const translated = translateNode(filter[0], opt) ?? {};
   const merged = mergeDuplicatedFields(translated);
   return merged;
@@ -43,7 +31,7 @@ export function translateFilterToMongoDb(
 
 function translateNode(
   node: LogicalOrFilterNode,
-  options: Concrete<TranslateFilterOptions>
+  options: Concrete<FilterOptions>
 ): Filter<Document> | null {
   return LOGICAL_OPERATORS.includes(node.operator)
     ? translateLogicalNode(node as LogicalNode, options)
@@ -52,7 +40,7 @@ function translateNode(
 
 function translateLogicalNode(
   node: LogicalNode,
-  options: Concrete<TranslateFilterOptions>
+  options: Concrete<FilterOptions>
 ): Filter<Document> | null {
   const mongoOperator = translateOperator(node.operator);
   if (mongoOperator === null) return null;
@@ -65,7 +53,7 @@ function translateLogicalNode(
 
 function translateFilterNode(
   node: FilterNode,
-  options: Concrete<TranslateFilterOptions>
+  options: Concrete<FilterOptions>
 ): Filter<Document> | null {
   const mongoOperator = translateOperator(node.operator);
   if (mongoOperator === null) return null;
@@ -78,14 +66,4 @@ function translateFilterNode(
       [mongoOperator]: node.value,
     },
   };
-}
-
-function shouldDiscardField(
-  field: string,
-  options: Concrete<TranslateFilterOptions>
-): boolean {
-  const { acceptedFields, ignoredFields } = options;
-  if (acceptedFields.length && !acceptedFields.includes(field)) return true;
-  if (ignoredFields.length && ignoredFields.includes(field)) return true;
-  return false;
 }
