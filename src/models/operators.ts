@@ -88,7 +88,7 @@ export const OPERATOR_SYNONYMS = [
   [LOGICAL_AND, "&&"],
   [LOGICAL_OR, "||"],
   [FILTER_EQUALS, "eq", "==", "==="],
-  [FILTER_NOT_EQUALS, "neq", "!=", "!=="],
+  [FILTER_NOT_EQUALS, "ne", "neq", "!=", "!=="],
   [FILTER_IN, "in"],
   [FILTER_NOT_IN, "nin"],
   [FILTER_CONTAINS, "cn"],
