@@ -90,9 +90,20 @@ function normalizeLogicalNode(
 ): LogicalNode | FilterNode | null {
   const operator = resolveOperator(input.key);
   if (!isLogicalOperator(operator)) return null;
-  if (!isObject(input.value)) return null;
 
-  const conditions = Object.entries(input.value as Record<string, unknown>)
+  const entries =
+    // Processa o formato `{ and: { name: "John", age: { gt: 18 } } }`
+    isObject(input.value)
+      ? Object.entries(input.value as Record<string, unknown>)
+      : // Processa o formato `{ and: [{ name: "John" }, { age: { gt: 18 } }] }`
+      Array.isArray(input.value)
+      ? input.value.flatMap((value) =>
+          Object.entries(value as Record<string, unknown>)
+        )
+      : null;
+  if (!entries) return null;
+
+  const conditions = entries
     .map((entry) => {
       const input = { key: entry[0], value: entry[1] };
       return normalizeNode(input, options);
