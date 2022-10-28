@@ -9,6 +9,8 @@ import { mergeDuplicatedFields } from "./mergeDuplicatedFields";
 import { translateOperator } from "./translateOperator";
 
 export interface TranslateFilterOptions {
+  acceptedFields?: string[];
+  ignoredFields?: string[];
   remapFieldNames?: Record<string, string>;
 }
 
@@ -16,6 +18,8 @@ export function normalizeFilterOptions(
   options?: TranslateFilterOptions
 ): Concrete<TranslateFilterOptions> {
   return {
+    acceptedFields: [],
+    ignoredFields: [],
     remapFieldNames: {},
     ...options,
   };
@@ -67,10 +71,21 @@ function translateFilterNode(
   if (mongoOperator === null) return null;
 
   const fieldName = options.remapFieldNames[node.field] ?? node.field;
+  if (shouldDiscardField(fieldName, options)) return null;
 
   return {
     [fieldName]: {
       [mongoOperator]: node.value,
     },
   };
+}
+
+function shouldDiscardField(
+  field: string,
+  options: Concrete<TranslateFilterOptions>
+): boolean {
+  const { acceptedFields, ignoredFields } = options;
+  if (acceptedFields.length && !acceptedFields.includes(field)) return true;
+  if (ignoredFields.length && ignoredFields.includes(field)) return true;
+  return false;
 }
