@@ -29,9 +29,7 @@ export function flattenLogicalOperators(
           conditions: flattened,
         });
       }
-    } else {
-      result.push(node);
-    }
+    } else result.push(node);
   }
   return result;
 }
