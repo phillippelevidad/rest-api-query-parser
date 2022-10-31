@@ -74,6 +74,31 @@ The consumer can use alternate forms, such as `&&` for `and`, `>=` for `greaterT
 
 See [operators.ts](https://github.com/phillippelevidad/rest-api-query-parser/blob/main/src/models/operators.ts) for a list of all supported operators and their synonyms.
 
+---
+
+## Usage
+
+``` ts
+app.get("/products", (req, res) => {
+  // Parse the filter from the query string
+  const filterJson = JSON.parse(decodeURIComponent(req.query.filter));
+  const filter = normalizeInputFilter(filterJson);
+  
+  // Add a security layer
+  const secureFilter = mergeFilters(filter, [{
+    field: "ownerId",
+    operator: "equals",
+    value: "a0s9d8as8d0900s" // <- maybe get this from the auth token
+  }]);
+  
+  // Convert the filter to a MongoDB query and execute it
+  const mongoDbFilter = translateFilterToMongoDb(secureFilter);
+  const results = db.products.find(mongoDbFilter);
+  
+  res.json(results);
+});
+```
+
 ### Warning ⚠️
 
 This is a prototype. It has not been well tested. Use at your own risk. Feel free to use as a starting point. Contributions are wellcome.
